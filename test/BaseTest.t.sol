@@ -16,7 +16,7 @@ import {OracleMock} from "./mock/OracleMock.sol";
 import {ERC20Mock} from "./mock/ERC20Mock.sol";
 import {IAggregatorV3} from "../contracts/interfaces/IAggregatorV3.sol";
 import {ERC20} from "solmate/src/tokens/ERC20.sol";
-import {Kerosine}   from "../contracts/staking/Kerosine.sol";
+import {Kerosene}   from "../contracts/staking/Kerosene.sol";
 import {DyadXP}   from "../contracts/staking/DyadXP.sol";
 
 contract BaseTest is Test, Parameters {
@@ -26,7 +26,7 @@ contract BaseTest is Test, Parameters {
   Dyad         dyad;
   VaultManager vaultManager;
   Payments     payments;
-  Kerosine     kerosine;
+  Kerosene     kerosene;
 
   // weth
   Vault        wethVault;
@@ -38,9 +38,9 @@ contract BaseTest is Test, Parameters {
   ERC20Mock    dai;
   OracleMock   daiOracle;
 
-  // kerosine
-  Vault        kerosineVault;
-  OracleMock   kerosineOracle;
+  // kerosene
+  Vault        keroseneVault;
+  OracleMock   keroseneOracle;
 
 
   DyadXP       dyadXp;
@@ -65,7 +65,7 @@ contract BaseTest is Test, Parameters {
     vaultManager         = contracts.vaultManager;
     wethVault            = contracts.vault;
     payments             = contracts.payments;
-    kerosine             = contracts.kerosine;
+    kerosene             = contracts.kerosene;
 
     // create the DAI vault
     dai       = new ERC20Mock("DAI-TEST", "DAIT");
@@ -76,22 +76,22 @@ contract BaseTest is Test, Parameters {
       IAggregatorV3(address(daiOracle))
     );
 
-    kerosineOracle = new OracleMock(5);
-    kerosineVault  = new Vault(
+    keroseneOracle = new OracleMock(5);
+    keroseneVault  = new Vault(
       vaultManager,
       ERC20(address(dai)),
       IAggregatorV3(address(daiOracle))
     );
 
-    dyadXp = new DyadXP(address(vaultManager),  address(kerosineVault),  address(dNft));
+    dyadXp = new DyadXP(address(vaultManager),  address(keroseneVault),  address(dNft));
 
     //init vaultmanager
     vaultManager.initialize(address(dyadXp),dNft,dyad,vaultLicenser);
-    vaultManager.setKeroseneVault(address(kerosineVault));
+    vaultManager.setKeroseneVault(address(keroseneVault));
     // add the DAI vault
     vm.startBroadcast(vaultLicenser.owner());
     vaultLicenser.add(address(daiVault),false);
-    vaultLicenser.add(address(kerosineVault),true);    
+    vaultLicenser.add(address(keroseneVault),true);    
     vaultLicenser.add(address(wethVault),false);
     vm.stopBroadcast();
   }

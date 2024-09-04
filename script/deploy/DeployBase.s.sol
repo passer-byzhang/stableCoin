@@ -8,7 +8,7 @@ import {VaultLicenser}      from "../../contracts/core/VaultLicenser.sol";
 import {Licenser}      from "../../contracts/core/Licenser.sol";
 import {VaultManager}  from "../../contracts/core/VaultManager.sol";
 import {Vault}         from "../../contracts/core/Vault.sol";
-import {Kerosine}   from "../../contracts/staking/Kerosine.sol";
+import {Kerosene}   from "../../contracts/staking/Kerosene.sol";
 import {Staking}    from "../../contracts/staking/Staking.sol";
 import {Payments}      from "../../contracts/periphery/Payments.sol";
 import {IAggregatorV3} from "../../contracts/interfaces/IAggregatorV3.sol";
@@ -24,7 +24,7 @@ struct Contracts {
   VaultManager vaultManager;
   Vault        vault;
   Payments     payments;
-  Kerosine     kerosine;
+  Kerosene     kerosene;
 }
 
 contract DeployBase is Script {
@@ -53,7 +53,7 @@ contract DeployBase is Script {
         vaultManagerLicenser
       );
 
-      Kerosine kerosine             = new Kerosine();
+      Kerosene kerosene             = new Kerosene();
 
 
 
@@ -93,7 +93,7 @@ contract DeployBase is Script {
         vaultManager,
         vault, 
         payments,
-        kerosine
+        kerosene
       );
   }
 }

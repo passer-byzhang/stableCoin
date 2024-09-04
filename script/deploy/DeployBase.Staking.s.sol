@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../../lib/forge-std/src/Script.sol";
 
-import {Kerosine}   from "../../contracts/staking/Kerosine.sol";
+import {Kerosene}   from "../../contracts/staking/Kerosene.sol";
 import {Staking}    from "../../contracts/staking/Staking.sol";
 import {Parameters} from "../../contracts/params/Parameters.sol";
 
@@ -17,10 +17,10 @@ contract StakingDeployBase is Script {
       ERC20   _lpToken
   ) public {
 
-      Kerosine kerosine = new Kerosine();
-      Staking  staking  = new Staking(_lpToken, kerosine);
+      Kerosene kerosene = new Kerosene();
+      Staking  staking  = new Staking(_lpToken, kerosene);
 
-      kerosine.transfer(
+      kerosene.transfer(
         address(staking),
         _stakingRewards
       );
@@ -28,9 +28,9 @@ contract StakingDeployBase is Script {
       staking.setRewardsDuration(_rewardsDuration);
       staking.notifyRewardAmount(_stakingRewards);
 
-      kerosine.transfer(
+      kerosene.transfer(
         _owner,                          
-        kerosine.totalSupply() - _stakingRewards 
+        kerosene.totalSupply() - _stakingRewards 
       );
 
       staking.transferOwnership(_owner);

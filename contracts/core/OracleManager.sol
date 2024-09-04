@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {Owned}         from "solmate/src/auth/Owned.sol";
 
-contract KerosineManager is Owned(msg.sender) {
+contract KeroseneManager is Owned(msg.sender) {
   error TooManyVaults();
   error VaultAlreadyAdded();
   error VaultNotFound();
