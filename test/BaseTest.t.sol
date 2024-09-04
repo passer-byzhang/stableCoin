@@ -7,6 +7,7 @@ import {DeployBase, Contracts} from "../script/deploy/DeployBase.s.sol";
 import {Parameters} from "../contracts/params/Parameters.sol";
 import {DNft} from "../contracts/core/DNft.sol";
 import {Dyad} from "../contracts/core/Dyad.sol";
+import {VaultLicenser} from "../contracts/core/VaultLicenser.sol";
 import {Licenser} from "../contracts/core/Licenser.sol";
 import {VaultManager} from "../contracts/core/VaultManager.sol";
 import {Vault} from "../contracts/core/Vault.sol";
@@ -21,7 +22,7 @@ import {DyadXP}   from "../contracts/staking/DyadXP.sol";
 contract BaseTest is Test, Parameters {
   DNft         dNft;
   Licenser     vaultManagerLicenser;
-  Licenser     vaultLicenser;
+  VaultLicenser     vaultLicenser;
   Dyad         dyad;
   VaultManager vaultManager;
   Payments     payments;
@@ -75,7 +76,7 @@ contract BaseTest is Test, Parameters {
       IAggregatorV3(address(daiOracle))
     );
 
-    kerosineOracle = new OracleMock(1e18);
+    kerosineOracle = new OracleMock(5);
     kerosineVault  = new Vault(
       vaultManager,
       ERC20(address(dai)),
@@ -85,11 +86,14 @@ contract BaseTest is Test, Parameters {
     dyadXp = new DyadXP(address(vaultManager),  address(kerosineVault),  address(dNft));
 
     //init vaultmanager
-    vaultManager.initialize(address(dyadXp));
-
+    vaultManager.initialize(address(dyadXp),dNft,dyad,vaultLicenser);
+    vaultManager.setKeroseneVault(address(kerosineVault));
     // add the DAI vault
-    vm.prank(vaultLicenser.owner());
-    vaultLicenser.add(address(daiVault));
+    vm.startBroadcast(vaultLicenser.owner());
+    vaultLicenser.add(address(daiVault),false);
+    vaultLicenser.add(address(kerosineVault),true);    
+    vaultLicenser.add(address(wethVault),false);
+    vm.stopBroadcast();
   }
 
   receive() external payable {}

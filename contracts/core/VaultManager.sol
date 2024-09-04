@@ -17,6 +17,8 @@ import {ERC1967Proxy}  from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+import "hardhat/console.sol";
+
 /// @custom:oz-upgrades-from src/core/VaultManagerV3.sol:VaultManagerV3
 contract VaultManager is IVaultManager, OwnableUpgradeable {
   using EnumerableSet     for EnumerableSet.AddressSet;
@@ -27,11 +29,12 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
   uint public constant MIN_COLLAT_RATIO   = 1.5e18; // 150% // Collaterization
   uint public constant LIQUIDATION_REWARD = 0.2e18; //  20%
 
-  address public constant KEROSENE_VAULT = 0x4808e4CC6a2Ba764778A0351E1Be198494aF0b43;
+  //address public constant KEROSENE_VAULT = 0x4808e4CC6a2Ba764778A0351E1Be198494aF0b43;
 
   DNft          public dNft;
   Dyad          public dyad;
   VaultLicenser public vaultLicenser;
+  address       public keroseneVault;
 
   mapping (uint => EnumerableSet.AddressSet) internal vaults; 
   mapping (uint/* id */ => uint/* block */)  public   lastDeposit;
@@ -48,13 +51,16 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
   /// @custom:oz-upgrades-unsafe-allow constructor
   //constructor() { _disableInitializers(); }
 
-  function initialize(address dyadXPImpl)
+  function initialize(address dyadXPImpl,DNft _dNft, Dyad _dyad, VaultLicenser _vaultLicenser) 
     public 
     initializer
   {
     __Ownable_init(msg.sender);
     ERC1967Proxy proxy = new ERC1967Proxy(address(dyadXPImpl), abi.encodeWithSignature("initialize(address)", owner()));
     dyadXP = DyadXP(address(proxy));
+    dNft = _dNft;
+    dyad = _dyad;
+    vaultLicenser = _vaultLicenser;
   }
 
   function add(
@@ -94,8 +100,8 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
     Vault _vault = Vault(vault);
     _vault.asset().safeTransferFrom(msg.sender, vault, amount);
     _vault.deposit(id, amount);
-
-    if (vault == KEROSENE_VAULT) {
+    
+    if (vault == keroseneVault) {
       dyadXP.afterKeroseneDeposited(id, amount);
     }
   }
@@ -110,7 +116,7 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
       isDNftOwner(id)
   {
     if (lastDeposit[id] == block.number) revert CanNotWithdrawInSameBlock();
-    if (vault == KEROSENE_VAULT) dyadXP.beforeKeroseneWithdrawn(id, amount);
+    if (vault == keroseneVault) dyadXP.beforeKeroseneWithdrawn(id, amount);
     Vault(vault).withdraw(id, to, amount); // changes `exo` or `kero` value and `cr`
     _checkExoValueAndCollatRatio(id);
   }
@@ -137,6 +143,7 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
     (uint exoValue, uint keroValue) = getVaultsValues(id);
     uint mintedDyad = dyad.mintedDyad(id);
     if (exoValue < mintedDyad) revert NotEnoughExoCollat();
+    console.log("exoValue: %d, keroValue: %d, mintedDyad: %d", exoValue, keroValue, mintedDyad);
     uint cr = _collatRatio(mintedDyad, exoValue+keroValue);
     if (cr < MIN_COLLAT_RATIO) revert CrTooLow();
   }
@@ -217,11 +224,11 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
                       / vault.assetPrice() 
                       / 1e18;
           }
-          if (address(vault) == KEROSENE_VAULT) {
+          if (address(vault) == keroseneVault) {
             dyadXP.beforeKeroseneWithdrawn(id, asset);
           }
           vault.move(id, to, asset);
-          if (address(vault) == KEROSENE_VAULT) {
+          if (address(vault) == keroseneVault) {
             dyadXP.afterKeroseneDeposited(to, asset);
           } 
         }
@@ -306,5 +313,14 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
     view 
     returns (bool) {
       return vaults[id].contains(vault);
+  }
+
+  function setKeroseneVault(
+    address _keroseneVault
+  )
+  onlyOwner
+  public
+  {
+    keroseneVault = _keroseneVault;
   }
 }

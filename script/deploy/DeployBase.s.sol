@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "../../lib/forge-std/src/Script.sol";
 import {DNft}          from "../../contracts/core/DNft.sol";
 import {Dyad}          from "../../contracts/core/Dyad.sol";
+import {VaultLicenser}      from "../../contracts/core/VaultLicenser.sol";
 import {Licenser}      from "../../contracts/core/Licenser.sol";
 import {VaultManager}  from "../../contracts/core/VaultManager.sol";
 import {Vault}         from "../../contracts/core/Vault.sol";
@@ -18,7 +19,7 @@ import {ERC20} from "solmate/src/tokens/ERC20.sol";
 // only used for stack too deep issues
 struct Contracts {
   Licenser     vaultManagerLicenser;
-  Licenser     vaultLicenser;
+  VaultLicenser     vaultLicenser;
   Dyad         dyad;
   VaultManager vaultManager;
   Vault        vault;
@@ -46,7 +47,7 @@ contract DeployBase is Script {
       vm.startBroadcast();  // ----------------------
 
       Licenser vaultManagerLicenser = new Licenser();
-      Licenser vaultLicenser        = new Licenser();
+      VaultLicenser vaultLicenser        = new VaultLicenser();
 
       Dyad dyad                     = new Dyad(
         vaultManagerLicenser
@@ -75,12 +76,13 @@ contract DeployBase is Script {
 
       // 
       vaultManagerLicenser.add(address(vaultManager));
-      vaultLicenser       .add(address(vault));
+      vaultLicenser       .add(address(vault),false);
 
       //
       vaultManagerLicenser.transferOwnership(_owner);
       vaultLicenser       .transferOwnership(_owner);
       payments            .transferOwnership(_owner);
+
 
       vm.stopBroadcast();  // ----------------------------
 
