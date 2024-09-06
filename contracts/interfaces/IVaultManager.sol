@@ -7,7 +7,7 @@ interface IVaultManager {
   event MintDyad  (uint indexed id, uint amount, address indexed to);
   event BurnDyad  (uint indexed id, uint amount, address indexed from);
   event RedeemDyad(uint indexed id, address indexed vault, uint amount, address indexed to);
-  event Liquidate (uint indexed id, address indexed from, uint indexed to);
+  event Liquidate (uint indexed id, address indexed from, uint indexed to, uint amount);
 
   error NotOwner();
   error NotLicensed();
