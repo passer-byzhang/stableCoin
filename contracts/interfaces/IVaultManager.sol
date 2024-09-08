@@ -8,6 +8,8 @@ interface IVaultManager {
   event BurnDyad  (uint indexed id, uint amount, address indexed from);
   event RedeemDyad(uint indexed id, address indexed vault, uint amount, address indexed to);
   event Liquidate (uint indexed id, address indexed from, uint indexed to, uint amount);
+  event Init      (address dNft, address dyad, address vaultLicenser);
+  event SetKerosene(address kerosenseVault,address DyadXP);
 
   error NotOwner();
   error NotLicensed();

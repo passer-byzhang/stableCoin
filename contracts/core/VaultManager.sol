@@ -51,16 +51,15 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
   /// @custom:oz-upgrades-unsafe-allow constructor
   //constructor() { _disableInitializers(); }
 
-  function initialize(address dyadXPImpl,DNft _dNft, Dyad _dyad, VaultLicenser _vaultLicenser) 
+  function initialize(DNft _dNft, Dyad _dyad, VaultLicenser _vaultLicenser) 
     public 
     initializer
   {
     __Ownable_init(msg.sender);
-    ERC1967Proxy proxy = new ERC1967Proxy(address(dyadXPImpl), abi.encodeWithSignature("initialize(address)", owner()));
-    dyadXP = DyadXP(address(proxy));
     dNft = _dNft;
     dyad = _dyad;
     vaultLicenser = _vaultLicenser;
+    emit Init(address(_dNft), address(_dyad), address(_vaultLicenser));
   }
 
   function add(
@@ -101,7 +100,7 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
     _vault.asset().safeTransferFrom(msg.sender, vault, amount);
     _vault.deposit(id, amount);
     
-    if (vault == keroseneVault) {
+    if (keroseneVault!=address(0) && vault == keroseneVault) {
       dyadXP.afterKeroseneDeposited(id, amount);
     }
   }
@@ -116,7 +115,7 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
       isDNftOwner(id)
   {
     if (lastDeposit[id] == block.number) revert CanNotWithdrawInSameBlock();
-    if (vault == keroseneVault) dyadXP.beforeKeroseneWithdrawn(id, amount);
+    if (keroseneVault!=address(0) && vault == keroseneVault) dyadXP.beforeKeroseneWithdrawn(id, amount);
     Vault(vault).withdraw(id, to, amount); // changes `exo` or `kero` value and `cr`
     _checkExoValueAndCollatRatio(id);
   }
@@ -224,17 +223,17 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
                       / vault.assetPrice() 
                       / 1e18;
           }
-          if (address(vault) == keroseneVault) {
+          if (keroseneVault!=address(0) && address(vault) == keroseneVault) {
             dyadXP.beforeKeroseneWithdrawn(id, asset);
           }
           vault.move(id, to, asset);
-          if (address(vault) == keroseneVault) {
+          if (keroseneVault!=address(0) && address(vault) == keroseneVault) {
             dyadXP.afterKeroseneDeposited(to, asset);
           } 
         }
       }
 
-      emit Liquidate(id, msg.sender, to);
+      emit Liquidate(id, msg.sender, to, amount);
   }
 
   function collatRatio(
@@ -315,12 +314,16 @@ contract VaultManager is IVaultManager, OwnableUpgradeable {
       return vaults[id].contains(vault);
   }
 
-  function setKeroseneVault(
-    address _keroseneVault
+  function setKerosene(
+    address _keroseneVault,
+    DyadXP _dyadXP
   )
   onlyOwner
   public
   {
     keroseneVault = _keroseneVault;
+    dyadXP = _dyadXP;
+    emit SetKerosene(_keroseneVault, address(_dyadXP));
   }
+
 }
