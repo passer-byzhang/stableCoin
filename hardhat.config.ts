@@ -17,6 +17,9 @@ const config: HardhatUserConfig = {
     },
   },
   networks:{
+    /*neoxtestnet: {
+      url: "https://neoxt4seed1.ngd.network",
+    },*/
     base: {
       url: "https://mainnet.base.org",
     },
