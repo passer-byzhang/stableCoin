@@ -25,6 +25,7 @@ contract Staker  {
     struct UserInfo {
         uint256 tokenId; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
+        uint256 liquidity;
         //
         // We do some fancy math here. Basically, any point in time, the amount of SUSHIs
         // entitled to a user but is pending to be distributed is:
@@ -44,8 +45,6 @@ contract Staker  {
         uint256 accKeroPerShare; // Accumulated SUSHIs per share, times 1e12. See below.
         // The REWARD TOKEN!
         Kerosene kero;
-        // Block number when bonus SUSHI period ends.
-        uint256 bonusEndBlock;
         // SUSHI tokens created per block.
         uint256 keroPerBlock;
         //for uniswap v3
@@ -54,10 +53,12 @@ contract Staker  {
         int24 upTick;
         // The block number when SUSHI mining starts.
         uint256 startBlock;
+        uint256 endBlock;
         address token0;
         address token1;
         uint24 fee;
         StakerFactory factory;
+        uint256 totalLiquidity;
     }
 
 
@@ -110,59 +111,49 @@ contract Staker  {
         _;
     }
 
+    modifier onlyOnProcessing() {
+        require(block.number>=poolInfo.startBlock, "only started");
+        require(block.number<=poolInfo.endBlock, "only processing");
+        _;
+    }
+
     // View function to see pending SUSHIs on frontend.
-    function pendingKero(address _user) external view returns (uint256) {
-        UserInfo storage user = userInfo[_user];
+    function pendingKero(address account) external view returns (uint256) {
+        UserInfo storage user = userInfo[account];
         uint256 accSushiPerShare = poolInfo.accKeroPerShare;
-        uint256 lpSupply = poolInfo.lpToken.balanceOf(address(this));
-        if (block.number > poolInfo.lastRewardBlock && lpSupply != 0) {
-            uint256 keroReward = poolInfo.keroPerBlock
-                .mul(poolInfo.allocPoint)
-                .div(poolInfo.totalAllocPoint);
-            poolInfo.accKeroPerShare = accSushiPerShare.add(
-                keroReward.mul(1e12).div(lpSupply)
+        uint256 rewardTime = block.number > poolInfo.endBlock ? poolInfo.endBlock : block.number;
+        if (rewardTime > poolInfo.lastRewardBlock && poolInfo.totalLiquidity != 0) {
+            uint256 keroReward = poolInfo.keroPerBlock;
+            poolInfo.accKeroPerShare = accSushiPerShare + (
+                keroReward * 1e12 / poolInfo.totalLiquidity
             );
         }
         return
-            user.amount.mul(poolInfo.accKeroPerShare).div(1e12).sub(
-                user.rewardDebt
-            );
-    }
-
-    // Update reward vairables for all pools. Be careful of gas spending!
-    function massUpdatePools() public {
-        uint256 length = poolInfo.length;
-        for (uint256 pid = 0; pid < length; ++pid) {
-            updatePool(pid);
-        }
+            user.liquidity*poolInfo.accKeroPerShare/1e12 - user.rewardDebt;
     }
 
     // Update reward variables of the given pool to be up-to-date.
-    function updatePool() public {
+    function updatePool() onlyOnProcessing() public {
         if (block.number <= poolInfo.lastRewardBlock) {
             return;
         }
-        uint256 lpSupply = poolInfo.lpToken.balanceOf(address(this));
-        if (lpSupply == 0) {
+        if (poolInfo.totalLiquidity == 0) {
             poolInfo.lastRewardBlock = block.number;
             return;
         }
-        uint256 keroReward = poolInfo.sushiPerBlock
-            .mul(poolInfo.allocPoint)
-            .div(poolInfo.totalAllocPoint);
-        poolInfo.factory.drop(keroReward);
-        poolInfo.accSushiPerShare = poolInfo.accSushiPerShare.add(
-            keroReward.mul(1e12).div(lpSupply)
+        uint256 keroReward = poolInfo.keroPerBlock;
+        poolInfo.factory.dropToStaker(keroReward);
+        poolInfo.accKeroPerShare = poolInfo.accKeroPerShare + (
+            keroReward*1e12/poolInfo.totalLiquidity
         );
         poolInfo.lastRewardBlock = block.number;
     }
 
     // Deposit LP tokens to MasterChef for SUSHI allocation.
-    function stake(uint256 tokenId) public nftEligibe(tokenId) {
+    function stake(uint256 tokenId) public onlyOnProcessing nftEligibe(tokenId) {
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         (
-            ,
             ,
             ,
             address token0,
@@ -176,21 +167,13 @@ contract Staker  {
             ,
 
         ) = poolInfo.nonfungiblePositionManager.positions(tokenId);
-        if (user.amount > 0) {
-            uint256 pending = user
-                .amount
-                .mul(poolInfo.accSushiPerShare)
-                .div(1e12)
-                .sub(user.rewardDebt);
-            safeKeroTransfer(msg.sender, pending);
-        }
         poolInfo.nonfungiblePositionManager.safeTransferFrom(
             address(msg.sender),
             address(this),
             tokenId
         );
-        user.amount = user.amount.add(liquidity);
-        user.rewardDebt = user.amount.mul(poolInfo.accSushiPerShare).div(1e12);
+        user.liquidity = liquidity;
+        user.rewardDebt = user.liquidity * poolInfo.accKeroPerShare / 1e12;
         emit Deposit(msg.sender, tokenId, liquidity);
     }
 
@@ -198,25 +181,27 @@ contract Staker  {
     function withdraw(uint256 tokenId) public {
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
+        uint256 liquidity = user.liquidity;
         uint256 pending = user
-            .amount
-            .mul(poolInfo.accSushiPerShare)
-            .div(1e12)
-            .sub(user.rewardDebt);
+            .liquidity
+            * (poolInfo.accKeroPerShare)
+            / (1e12)
+            -(user.rewardDebt);
         safeKeroTransfer(msg.sender, pending);
-        user.amount = 0;
-        user.rewardDebt = user.amount.mul(poolInfo.accKeroPerShare).div(1e12);
+        user.liquidity = 0;
+        user.rewardDebt = user.liquidity * poolInfo.accKeroPerShare / 1e12;
         poolInfo.nonfungiblePositionManager.safeTransferFrom(address(this),address(msg.sender), tokenId);
-        emit Withdraw(msg.sender, tokenId);
+        emit Withdraw(msg.sender, tokenId, liquidity);
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
     function emergencyWithdraw(uint256 tokenId) public {
         PoolInfo storage pool = poolInfo;
         UserInfo storage user = userInfo[msg.sender];
-        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+        //transfer nft back to user
+        pool.nonfungiblePositionManager.safeTransferFrom(address(this),address(msg.sender), tokenId);
         emit EmergencyWithdraw(msg.sender, tokenId);
-        user.amount = 0;
+        user.liquidity = 0;
         user.rewardDebt = 0;
     }
 

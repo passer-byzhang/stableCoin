@@ -10,7 +10,7 @@ import "./Kerosene.sol";
 contract StakerFactory {
 
   event StakerCreated(address staker);
-
+  
 
   
   mapping(uint => address) public stakers;
