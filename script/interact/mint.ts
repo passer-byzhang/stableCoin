@@ -8,5 +8,3 @@ async function mintDNftTo(to:string){
     const tx = await dnft.connect(deployer).mintNft(to,{value:ethers.parseEther("0.000011")});
     console.log("mint DNft txhash:", tx.hash);
 }
-
-mintDNftTo("0x64C19ae379f00CBcB824F9F25a393eFB02987796")

@@ -55,8 +55,6 @@ contract DeployBase is Script {
 
       Kerosene kerosene             = new Kerosene();
 
-
-
       VaultManager vaultManager     = new VaultManager();
 
       Vault vault                   = new Vault(
