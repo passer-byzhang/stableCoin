@@ -18,7 +18,7 @@ import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
 
-contract Staker  {
+contract Staker {
     using Math for uint256;
     //using SafeERC20 for IERC20;
     // Info of each user.
@@ -40,7 +40,6 @@ contract Staker  {
     }
     // Info of each pool.
     struct PoolInfo {
-        uint256 allocPoint; // How many allocation points assigned to this pool. SUSHIs to distribute per block.
         uint256 lastRewardBlock; // Last block number that SUSHIs distribution occurs.
         uint256 accKeroPerShare; // Accumulated SUSHIs per share, times 1e12. See below.
         // The REWARD TOKEN!
@@ -60,9 +59,6 @@ contract Staker  {
         StakerFactory factory;
         uint256 totalLiquidity;
     }
-
-
-
 
     PoolInfo public poolInfo;
 
@@ -84,8 +80,7 @@ contract Staker  {
     );
     event EmergencyWithdraw(address indexed user, uint256 tokenId);
 
-    constructor(PoolInfo memory _poolInfo) public {
-        poolInfo = _poolInfo;
+    constructor(StakerFactory.StakeDeployedStruct memory params) {
     }
 
     modifier nftEligibe(uint256 tokenId) {
@@ -112,45 +107,57 @@ contract Staker  {
     }
 
     modifier onlyOnProcessing() {
-        require(block.number>=poolInfo.startBlock, "only started");
-        require(block.number<=poolInfo.endBlock, "only processing");
+        require(block.number >= poolInfo.startBlock, "only started");
+        require(block.number <= poolInfo.endBlock, "only processing");
         _;
     }
 
     // View function to see pending SUSHIs on frontend.
     function pendingKero(address account) external view returns (uint256) {
         UserInfo storage user = userInfo[account];
-        uint256 accSushiPerShare = poolInfo.accKeroPerShare;
-        uint256 rewardTime = block.number > poolInfo.endBlock ? poolInfo.endBlock : block.number;
-        if (rewardTime > poolInfo.lastRewardBlock && poolInfo.totalLiquidity != 0) {
+        uint256 accKeroPerShare = poolInfo.accKeroPerShare;
+        uint256 rewardBlock = block.number > poolInfo.endBlock
+            ? poolInfo.endBlock
+            : block.number;
+        if (
+            rewardBlock > poolInfo.lastRewardBlock &&
+            poolInfo.totalLiquidity != 0
+        ) {
             uint256 keroReward = poolInfo.keroPerBlock;
-            poolInfo.accKeroPerShare = accSushiPerShare + (
-                keroReward * 1e12 / poolInfo.totalLiquidity
-            );
+            accKeroPerShare =
+                accKeroPerShare +
+                ((keroReward * 1e12) / poolInfo.totalLiquidity);
         }
         return
-            user.liquidity*poolInfo.accKeroPerShare/1e12 - user.rewardDebt;
+            (user.liquidity * poolInfo.accKeroPerShare) /
+            1e12 -
+            user.rewardDebt;
     }
 
     // Update reward variables of the given pool to be up-to-date.
-    function updatePool() onlyOnProcessing() public {
-        if (block.number <= poolInfo.lastRewardBlock) {
+    function updatePool() public {
+        uint256 rewardBlock = block.number > poolInfo.endBlock
+            ? poolInfo.endBlock
+            : block.number;
+        if (rewardBlock <= poolInfo.lastRewardBlock) {
             return;
         }
         if (poolInfo.totalLiquidity == 0) {
-            poolInfo.lastRewardBlock = block.number;
+            poolInfo.lastRewardBlock = rewardBlock;
             return;
         }
         uint256 keroReward = poolInfo.keroPerBlock;
         poolInfo.factory.dropToStaker(keroReward);
-        poolInfo.accKeroPerShare = poolInfo.accKeroPerShare + (
-            keroReward*1e12/poolInfo.totalLiquidity
-        );
-        poolInfo.lastRewardBlock = block.number;
+        poolInfo.accKeroPerShare =
+            poolInfo.accKeroPerShare +
+            ((keroReward * 1e12) / poolInfo.totalLiquidity);
+        poolInfo.lastRewardBlock = rewardBlock;
     }
 
     // Deposit LP tokens to MasterChef for SUSHI allocation.
-    function stake(uint256 tokenId) public onlyOnProcessing nftEligibe(tokenId) {
+    function stake(
+        uint256 tokenId
+    ) public onlyOnProcessing nftEligibe(tokenId) {
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         (
@@ -173,7 +180,7 @@ contract Staker  {
             tokenId
         );
         user.liquidity = liquidity;
-        user.rewardDebt = user.liquidity * poolInfo.accKeroPerShare / 1e12;
+        user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
         emit Deposit(msg.sender, tokenId, liquidity);
     }
 
@@ -182,15 +189,17 @@ contract Staker  {
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         uint256 liquidity = user.liquidity;
-        uint256 pending = user
-            .liquidity
-            * (poolInfo.accKeroPerShare)
-            / (1e12)
-            -(user.rewardDebt);
+        uint256 pending = (user.liquidity * (poolInfo.accKeroPerShare)) /
+            (1e12) -
+            (user.rewardDebt);
         safeKeroTransfer(msg.sender, pending);
         user.liquidity = 0;
-        user.rewardDebt = user.liquidity * poolInfo.accKeroPerShare / 1e12;
-        poolInfo.nonfungiblePositionManager.safeTransferFrom(address(this),address(msg.sender), tokenId);
+        user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
+        poolInfo.nonfungiblePositionManager.safeTransferFrom(
+            address(this),
+            address(msg.sender),
+            tokenId
+        );
         emit Withdraw(msg.sender, tokenId, liquidity);
     }
 
@@ -199,7 +208,11 @@ contract Staker  {
         PoolInfo storage pool = poolInfo;
         UserInfo storage user = userInfo[msg.sender];
         //transfer nft back to user
-        pool.nonfungiblePositionManager.safeTransferFrom(address(this),address(msg.sender), tokenId);
+        pool.nonfungiblePositionManager.safeTransferFrom(
+            address(this),
+            address(msg.sender),
+            tokenId
+        );
         emit EmergencyWithdraw(msg.sender, tokenId);
         user.liquidity = 0;
         user.rewardDebt = 0;
