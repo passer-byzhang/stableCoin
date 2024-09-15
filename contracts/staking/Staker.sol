@@ -8,6 +8,7 @@ import {SafeTransferLib} from "solmate/src/utils/SafeTransferLib.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./Kerosene.sol";
 import "./StakerFactory.sol";
@@ -18,7 +19,7 @@ import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
 
-contract Staker {
+contract Staker is IERC721Receiver{
     using Math for uint256;
     //using SafeERC20 for IERC20;
     // Info of each user.
