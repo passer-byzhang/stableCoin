@@ -30,7 +30,10 @@ contract StakerFactory {
   
   mapping(uint => address) public stakers;
   mapping(address => bool) public isStaker;
+  mapping(uint256 => address) public epochs;
   Kerosene public kero;
+  uint256 public epochIndex;
+
   INonfungiblePositionManager public nonfungiblePositionManager;
 
 
@@ -61,8 +64,7 @@ contract StakerFactory {
       uint256 endBlock,
       uint256 keroPerBlock
   ) external returns (address) {
-    Staker staker = new Staker(
-       StakeDeployedStruct({
+    StakeDeployedStruct memory newStaker=       StakeDeployedStruct({
         kero: kero,
         keroPerBlock: keroPerBlock,
         nonfungiblePositionManager: nonfungiblePositionManager,
@@ -74,11 +76,31 @@ contract StakerFactory {
         token1: token1,
         fee: fee,
         factory: this
-      })
+      });
+
+    if(epochIndex > 0) {
+      (,,,,,,,,uint256 lastEndBlock,,,,,) = Staker(epochs[epochIndex]).poolInfo();
+      require(startBlock > lastEndBlock, "StakerFactory: epoch not finished");
+    }
+
+    Staker staker = new Staker(
+newStaker
     );
     emit StakerCreated(address(staker));
+    epochIndex++;
+    stakers[epochIndex] = address(staker);
     return address(staker);
   }
+
+  function updateEpoch(
+    uint256 _startBlock,
+    uint256 _endBlock,
+    uint256 _keroPerBlock
+  ) internal {
+
+    epochIndex++;
+  }
+
 
   function dropToStaker(uint256 _amount) onlyStaker() external {
     kero.transfer(msg.sender, _amount);
