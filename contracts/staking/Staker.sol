@@ -79,6 +79,7 @@ contract Staker is IERC721Receiver{
         uint256 indexed tokenId,
         uint256 amount
     );
+    event Harvest(address indexed user, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 tokenId);
 
     constructor(StakerFactory.StakeDeployedStruct memory params) {
@@ -204,6 +205,19 @@ contract Staker is IERC721Receiver{
         emit Withdraw(msg.sender, tokenId, liquidity);
     }
 
+    function harvest() public {
+        UserInfo storage user = userInfo[msg.sender];
+        updatePool();
+        uint256 pending = (user.liquidity * (poolInfo.accKeroPerShare)) /
+            (1e12) -
+            (user.rewardDebt);
+        safeKeroTransfer(msg.sender, pending);
+        user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
+        emit Harvest(msg.sender, pending);
+    }
+
+
+
     // Withdraw without caring about rewards. EMERGENCY ONLY.
     function emergencyWithdraw(uint256 tokenId) public {
         PoolInfo storage pool = poolInfo;
@@ -228,6 +242,8 @@ contract Staker is IERC721Receiver{
             poolInfo.kero.transfer(_to, _amount);
         }
     }
+
+
 
     function onERC721Received(
         address,

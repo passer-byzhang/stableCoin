@@ -9,7 +9,7 @@ import {Owned} from "solmate/src/auth/Owned.sol";
 import "./Kerosene.sol";
 
 contract StakerFactory is Owned{
-    event StakerCreated(address staker);
+    event StakerCreated(uint index,address staker);
 
     struct StakeDeployedStruct {
         Kerosene kero;
@@ -94,10 +94,11 @@ contract StakerFactory is Owned{
             );
         }
         Staker staker = new Staker(newStaker);
-        emit StakerCreated(address(staker));
+
         epochCreatedIndex++;
         stakers[epochCreatedIndex] = address(staker);
         isStaker[address(staker)] = true;
+        emit StakerCreated(epochCreatedIndex,address(staker));
         return address(staker);
     }
 
