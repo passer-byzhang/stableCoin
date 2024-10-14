@@ -83,6 +83,18 @@ contract Staker is IERC721Receiver{
     event EmergencyWithdraw(address indexed user, uint256 tokenId);
 
     constructor(StakerFactory.StakeDeployedStruct memory params) {
+        poolInfo.kero = params.kero;
+        poolInfo.keroPerBlock = params.keroPerBlock;
+        poolInfo.nonfungiblePositionManager = params.nonfungiblePositionManager;
+        poolInfo.lowTick = params.lowTick;
+        poolInfo.upTick = params.upTick;
+        poolInfo.startBlock = params.startBlock;
+        poolInfo.endBlock = params.endBlock;
+        poolInfo.token0 = params.token0;
+        poolInfo.token1 = params.token1;
+        poolInfo.fee = params.fee;
+        poolInfo.factory = params.factory;
+        poolInfo.lastRewardBlock = params.startBlock;
     }
 
     modifier nftEligibe(uint256 tokenId) {
