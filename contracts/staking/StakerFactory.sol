@@ -32,6 +32,7 @@ contract StakerFactory is Owned{
 
     mapping(uint => address) public stakers;
     mapping(address => bool) public isStaker;
+    mapping(address => address) public userToStaker;
     Kerosene public kero;
     uint256 public epochCreatedIndex;
 
@@ -102,6 +103,13 @@ contract StakerFactory is Owned{
         return address(staker);
     }
 
+    function setUserToStaker(address _user,uint _tokenId,address _staker,bool isStaked) public onlyStaker {
+        if(isStaked){
+            userToStaker[_user] = _staker;
+        }else{
+            userToStaker[_user] = address(0);
+        }
+    }
 
     function dropToStaker(uint256 _amount) external onlyStaker {
         kero.transfer(msg.sender, _amount);

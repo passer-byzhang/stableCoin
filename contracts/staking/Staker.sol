@@ -105,6 +105,8 @@ contract Staker is IERC721Receiver{
         require(fee == poolInfo.fee, "fee is not the same");
         require(tickLower == poolInfo.lowTick, "tickLower is not the same");
         require(tickUpper == poolInfo.upTick, "tickUpper is not the same");
+        address staker = StakerFactory(poolInfo.factory).userToStaker(msg.sender);
+        require(staker == address(0), "user is already staking");
         _;
     }
 
@@ -113,6 +115,8 @@ contract Staker is IERC721Receiver{
         require(block.number <= poolInfo.endBlock, "only processing");
         _;
     }
+
+
 
     // View function to see pending SUSHIs on frontend.
     function pendingKero(address account) external view returns (uint256) {
@@ -183,6 +187,13 @@ contract Staker is IERC721Receiver{
         );
         user.liquidity = liquidity;
         user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
+
+        StakerFactory(poolInfo.factory).setUserToStaker(
+            msg.sender,
+            tokenId,
+            address(this),
+            true
+        );
         emit Deposit(msg.sender, tokenId, liquidity);
     }
 
@@ -201,6 +212,12 @@ contract Staker is IERC721Receiver{
             address(this),
             address(msg.sender),
             tokenId
+        );
+        StakerFactory(poolInfo.factory).setUserToStaker(
+            msg.sender,
+            tokenId,
+            address(this),
+            false
         );
         emit Withdraw(msg.sender, tokenId, liquidity);
     }
@@ -231,6 +248,12 @@ contract Staker is IERC721Receiver{
         emit EmergencyWithdraw(msg.sender, tokenId);
         user.liquidity = 0;
         user.rewardDebt = 0;
+        StakerFactory(poolInfo.factory).setUserToStaker(
+            msg.sender,
+            tokenId,
+            address(this),
+            false
+        );
     }
 
     // Safe sushi transfer function, just in case if rounding error causes pool to not have enough SUSHIs.
