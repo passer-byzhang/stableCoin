@@ -8,7 +8,7 @@ import {Owned} from "solmate/src/auth/Owned.sol";
 
 import "./Kerosene.sol";
 
-contract StakerFactory is Owned{
+contract StakerFactory is Owned {
     event StakerCreated(uint index,address staker);
 
     struct StakeDeployedStruct {

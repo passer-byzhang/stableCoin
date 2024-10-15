@@ -9,7 +9,6 @@ import {Licenser}      from "../../contracts/core/Licenser.sol";
 import {VaultManager}  from "../../contracts/core/VaultManager.sol";
 import {Vault}         from "../../contracts/core/Vault.sol";
 import {Kerosene}   from "../../contracts/staking/Kerosene.sol";
-import {Staking}    from "../../contracts/staking/Staking.sol";
 import {Payments}      from "../../contracts/periphery/Payments.sol";
 import {IAggregatorV3} from "../../contracts/interfaces/IAggregatorV3.sol";
 import {IWETH}         from "../../contracts/interfaces/IWETH.sol";

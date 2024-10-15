@@ -86,8 +86,8 @@ contract BaseTest is Test, Parameters {
     dyadXp = new DyadXP(address(vaultManager),  address(keroseneVault),  address(dNft));
 
     //init vaultmanager
-    vaultManager.initialize(address(dyadXp),dNft,dyad,vaultLicenser);
-    vaultManager.setKeroseneVault(address(keroseneVault));
+    //vaultManager.initialize(address(dyadXp),dNft,dyad,vaultLicenser);
+    //vaultManager.setKeroseneVault(address(keroseneVault));
     // add the DAI vault
     vm.startBroadcast(vaultLicenser.owner());
     vaultLicenser.add(address(daiVault),false);

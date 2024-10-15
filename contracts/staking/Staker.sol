@@ -199,7 +199,7 @@ contract Staker is IERC721Receiver{
         );
         user.liquidity = liquidity;
         user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
-
+        poolInfo.totalLiquidity += liquidity;
         StakerFactory(poolInfo.factory).setUserToStaker(
             msg.sender,
             tokenId,
