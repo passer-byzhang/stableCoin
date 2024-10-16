@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./Kerosene.sol";
 import "./StakerFactory.sol";
-
+import "hardhat/console.sol";
 //for uniswap v3
 import "../dependencies/INonfungiblePositionManager.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
@@ -112,6 +112,10 @@ contract Staker is IERC721Receiver{
             ,
 
         ) = poolInfo.nonfungiblePositionManager.positions(tokenId);
+        console.log("token0: %s", token0);
+        console.log("token1: %s", token1);
+        console.log("poolInfo.token0: %s", poolInfo.token0);
+        console.log("poolInfo.token1: %s", poolInfo.token1);
         require(token0 == poolInfo.token0, "token0 is not the same");
         require(token1 == poolInfo.token1, "token1 is not the same");
         require(fee == poolInfo.fee, "fee is not the same");

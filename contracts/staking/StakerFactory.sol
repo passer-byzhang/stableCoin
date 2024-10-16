@@ -57,8 +57,9 @@ contract StakerFactory is Owned {
         nonfungiblePositionManager = INonfungiblePositionManager(
             _nonfungiblePositionManager
         );
-        token0 = _token0;
-        token1 = _token1;
+        (token0, token1) = _token0 < _token1
+            ? (_token0, _token1)
+            : (_token1, _token0);
     }
 
     function createStaker(
