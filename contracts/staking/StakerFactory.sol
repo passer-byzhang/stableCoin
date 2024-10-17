@@ -13,12 +13,12 @@ contract StakerFactory is Owned {
 
     struct StakeDeployedStruct {
         Kerosene kero;
-        uint256 keroPerBlock;
+        uint256 keroPerTime;
         INonfungiblePositionManager nonfungiblePositionManager;
         int24 lowTick;
         int24 upTick;
-        uint256 startBlock;
-        uint256 endBlock;
+        uint256 startTime;
+        uint256 endTime;
         address token0;
         address token1;
         uint24 fee;
@@ -66,20 +66,20 @@ contract StakerFactory is Owned {
         uint24 fee,
         int24 lowTick,
         int24 upTick,
-        uint256 startBlock,
-        uint256 endBlock,
-        uint256 keroPerBlock
+        uint256 startTime,
+        uint256 endTime,
+        uint256 keroPerTime
     ) external onlyOwner returns (address) {
-        require(startBlock<endBlock, "StakerFactory: startBlock should be less than endBlock");
+        require(startTime<endTime, "StakerFactory: startTime should be less than endTime");
         require(lowTick<upTick, "StakerFactory: lowTick should be less than upTick");
         StakeDeployedStruct memory newStaker = StakeDeployedStruct({
             kero: kero,
-            keroPerBlock: keroPerBlock,
+            keroPerTime: keroPerTime,
             nonfungiblePositionManager: nonfungiblePositionManager,
             lowTick: lowTick,
             upTick: upTick,
-            startBlock: startBlock,
-            endBlock: endBlock,
+            startTime: startTime,
+            endTime: endTime,
             token0: token0,
             token1: token1,
             fee: fee,
@@ -87,11 +87,11 @@ contract StakerFactory is Owned {
         });
 
         if (epochCreatedIndex > 0) {
-            (, , , , , , , , uint256 lastEndBlock, , , , , ) = Staker(
+            (, , , , , , , , uint256 lastendTime, , , , , ) = Staker(
                 stakers[epochCreatedIndex]
             ).poolInfo();
             require(
-                startBlock > lastEndBlock,
+                startTime > lastendTime,
                 "StakerFactory: epoch not finished"
             );
         }

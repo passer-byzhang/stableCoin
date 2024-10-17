@@ -34,26 +34,26 @@ contract Staker is IERC721Receiver{
         //   pending reward = (user.amount * pool.accSushiPerShare) - user.rewardDebt
         //
         // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-        //   1. The pool's `accSushiPerShare` (and `lastRewardBlock`) gets updated.
+        //   1. The pool's `accSushiPerShare` (and `lastRewardTime`) gets updated.
         //   2. User receives the pending reward sent to his/her address.
         //   3. User's `amount` gets updated.
         //   4. User's `rewardDebt` gets updated.
     }
     // Info of each pool.
     struct PoolInfo {
-        uint256 lastRewardBlock; // Last block number that SUSHIs distribution occurs.
+        uint256 lastRewardTime; // Last block number that SUSHIs distribution occurs.
         uint256 accKeroPerShare; // Accumulated SUSHIs per share, times 1e12. See below.
         // The REWARD TOKEN!
         Kerosene kero;
         // SUSHI tokens created per block.
-        uint256 keroPerBlock;
+        uint256 keroPerTime;
         //for uniswap v3
         INonfungiblePositionManager nonfungiblePositionManager;
         int24 lowTick;
         int24 upTick;
         // The block number when SUSHI mining starts.
-        uint256 startBlock;
-        uint256 endBlock;
+        uint256 startTime;
+        uint256 endTime;
         address token0;
         address token1;
         uint24 fee;
@@ -84,17 +84,17 @@ contract Staker is IERC721Receiver{
 
     constructor(StakerFactory.StakeDeployedStruct memory params) {
         poolInfo.kero = params.kero;
-        poolInfo.keroPerBlock = params.keroPerBlock;
+        poolInfo.keroPerTime = params.keroPerTime;
         poolInfo.nonfungiblePositionManager = params.nonfungiblePositionManager;
         poolInfo.lowTick = params.lowTick;
         poolInfo.upTick = params.upTick;
-        poolInfo.startBlock = params.startBlock;
-        poolInfo.endBlock = params.endBlock;
+        poolInfo.startTime = params.startTime;
+        poolInfo.endTime = params.endTime;
         poolInfo.token0 = params.token0;
         poolInfo.token1 = params.token1;
         poolInfo.fee = params.fee;
         poolInfo.factory = params.factory;
-        poolInfo.lastRewardBlock = params.startBlock;
+        poolInfo.lastRewardTime = params.startTime;
     }
 
     modifier nftEligibe(uint256 tokenId) {
@@ -127,8 +127,8 @@ contract Staker is IERC721Receiver{
     }
 
     modifier onlyOnProcessing() {
-        require(block.number >= poolInfo.startBlock, "only started");
-        require(block.number <= poolInfo.endBlock, "only processing");
+        require(block.timestamp >= poolInfo.startTime, "only started");
+        require(block.timestamp <= poolInfo.endTime, "only processing");
         _;
     }
 
@@ -138,14 +138,14 @@ contract Staker is IERC721Receiver{
     function pendingKero(address account) external view returns (uint256) {
         UserInfo storage user = userInfo[account];
         uint256 accKeroPerShare = poolInfo.accKeroPerShare;
-        uint256 rewardBlock = block.number > poolInfo.endBlock
-            ? poolInfo.endBlock
-            : block.number;
+        uint256 rewardTime = block.timestamp > poolInfo.endTime
+            ? poolInfo.endTime
+            : block.timestamp;
         if (
-            rewardBlock > poolInfo.lastRewardBlock &&
+            rewardTime > poolInfo.lastRewardTime &&
             poolInfo.totalLiquidity != 0
         ) {
-            uint256 keroReward = poolInfo.keroPerBlock;
+            uint256 keroReward = poolInfo.keroPerTime;
             accKeroPerShare =
                 accKeroPerShare +
                 ((keroReward * 1e12) / poolInfo.totalLiquidity);
@@ -158,22 +158,22 @@ contract Staker is IERC721Receiver{
 
     // Update reward variables of the given pool to be up-to-date.
     function updatePool() public {
-        uint256 rewardBlock = block.number > poolInfo.endBlock
-            ? poolInfo.endBlock
-            : block.number;
-        if (rewardBlock <= poolInfo.lastRewardBlock) {
+        uint256 rewardTime = block.timestamp > poolInfo.endTime
+            ? poolInfo.endTime
+            : block.timestamp;
+        if (rewardTime <= poolInfo.lastRewardTime) {
             return;
         }
         if (poolInfo.totalLiquidity == 0) {
-            poolInfo.lastRewardBlock = rewardBlock;
+            poolInfo.lastRewardTime = rewardTime;
             return;
         }
-        uint256 keroReward = poolInfo.keroPerBlock;
+        uint256 keroReward = poolInfo.keroPerTime;
         poolInfo.factory.dropToStaker(keroReward);
         poolInfo.accKeroPerShare =
             poolInfo.accKeroPerShare +
             ((keroReward * 1e12) / poolInfo.totalLiquidity);
-        poolInfo.lastRewardBlock = rewardBlock;
+        poolInfo.lastRewardTime = rewardTime;
     }
 
     // Deposit LP tokens to MasterChef for SUSHI allocation.
