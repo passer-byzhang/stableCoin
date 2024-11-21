@@ -4,7 +4,7 @@ export async function deployTokenA(){
     const [deployer, proxyAdmin] = await ethers.getSigners();
     //deploy dnft impl
     const ERC20Mock = await ethers.getContractFactory("ERC20Mock");
-    const token = await ERC20Mock.connect(deployer).deploy("TokenA","TokenA");
+    const token = await ERC20Mock.connect(deployer).deploy("USDD","USDD");
     await token.waitForDeployment();
     const tokenAddress = await token.getAddress();
     console.log("tokenA deployed to:", tokenAddress);
@@ -20,4 +20,3 @@ export async function deployMockOracle(price:number){
     const oracleAddress = await oracle.getAddress();
     console.log("oracle deployed to:", oracleAddress);
 }
-deployMockOracle(1000000);

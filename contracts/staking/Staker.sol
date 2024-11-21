@@ -132,8 +132,6 @@ contract Staker is IERC721Receiver{
         _;
     }
 
-
-
     // View function to see pending SUSHIs on frontend.
     function pendingKero(address account) external view returns (uint256) {
         UserInfo storage user = userInfo[account];
@@ -180,6 +178,7 @@ contract Staker is IERC721Receiver{
     function stake(
         uint256 tokenId
     ) public onlyOnProcessing nftEligibe(tokenId) {
+        require();
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         (
@@ -281,7 +280,6 @@ contract Staker is IERC721Receiver{
             poolInfo.kero.transfer(_to, _amount);
         }
     }
-
 
 
     function onERC721Received(
