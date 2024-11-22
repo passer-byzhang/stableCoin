@@ -178,7 +178,6 @@ contract Staker is IERC721Receiver{
     function stake(
         uint256 tokenId
     ) public onlyOnProcessing nftEligibe(tokenId) {
-        require();
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         (
