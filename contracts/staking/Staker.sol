@@ -199,6 +199,7 @@ contract Staker is IERC721Receiver{
             address(this),
             tokenId
         );
+        user.tokenId = tokenId;
         user.liquidity = liquidity;
         user.rewardDebt = (user.liquidity * poolInfo.accKeroPerShare) / 1e12;
         poolInfo.totalLiquidity += liquidity;
@@ -214,6 +215,7 @@ contract Staker is IERC721Receiver{
     // Withdraw LP tokens from MasterChef.
     function withdraw(uint256 tokenId) public {
         UserInfo storage user = userInfo[msg.sender];
+        require(user.tokenId == tokenId, "tokenId not match");
         updatePool();
         uint256 liquidity = user.liquidity;
         uint256 pending = (user.liquidity * (poolInfo.accKeroPerShare)) /
@@ -227,6 +229,7 @@ contract Staker is IERC721Receiver{
             address(msg.sender),
             tokenId
         );
+        user.tokenId = 0;
         StakerFactory(poolInfo.factory).setUserToStaker(
             msg.sender,
             tokenId,

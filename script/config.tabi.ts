@@ -2,6 +2,8 @@
 export const config = {
     addresses:{
         swap:{
+            factory:"0x1714F3f9d1fbC311422d700602483817F48Cca5F",
+            nonfungiblePositionManager:"0xd8442B36A021Ec592638C8B3529E492c5f6799B9"
         },
 
         usdd:{
