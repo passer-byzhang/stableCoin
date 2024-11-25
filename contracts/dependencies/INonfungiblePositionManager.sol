@@ -22,6 +22,7 @@ interface INonfungiblePositionManager is
     IERC721Enumerable,
     IERC721Permit
 {
+
     /// @notice Emitted when liquidity is increased for a position NFT
     /// @dev Also emitted when a token is minted
     /// @param tokenId The ID of the token for which liquidity was increased

@@ -9,6 +9,9 @@ export const config = {
         usdd:{
             addresses:"0x672BcCB5d3AEc98E1266CbADc002263A090C51bF"
         },
+        wtabi:{
+            addresses:"0xCde9c6ad3f82f322AC86DC63eFF63bC405072F95"
+        },
         chainlink:{
             usdd:"0x57e97390C8c944e552C7bdAFAf90fC2F82C0F4Df"
         },
@@ -48,7 +51,8 @@ export const config = {
             },
             Vault:{
                 usdd :"0xe01e37fA9218B480BC922613B2489ea54f23F2E2",
-                kerosene:"0xB620aB0b70C5d733B7a582bcBdf27B4222c25a7A"
+                kerosene:"0xB620aB0b70C5d733B7a582bcBdf27B4222c25a7A",
+                wtabi:"0x5eC36e4e6389390e68A57a8d2423d0DDF90eE643"
             },
             DyadXP:"0x96e65bAD2ECC9064A613Ea355DB123fF4f708370",
             KeroseneDenominator:"0x550931cd1F1147974834cE6140aE831A5f7f0704",

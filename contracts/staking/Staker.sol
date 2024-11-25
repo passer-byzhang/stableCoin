@@ -17,7 +17,7 @@ import "hardhat/console.sol";
 import "../dependencies/INonfungiblePositionManager.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
-import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
+
 
 contract Staker is IERC721Receiver{
     using Math for uint256;

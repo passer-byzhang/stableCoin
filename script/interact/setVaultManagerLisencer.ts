@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import {config} from "../config.base";
+import {config} from "../config.tabi";
 async function setVaultManagerLisencer(vaultManager:string,isLisence:boolean){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl

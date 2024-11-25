@@ -9,4 +9,4 @@ async function mint(token:string,to:string,amount:bigint){
     console.log("mint txhash:", tx.hash);
 }
 
-//mint("0x04CC49a74263Dc4eF9cA855f541797D9b86b04B8","0x48dDC29597d4074218ae3EdD0c85047Bfd321929",ethers.parseEther("100"))
+//mint("0x672BcCB5d3AEc98E1266CbADc002263A090C51bF","0x48dDC29597d4074218ae3EdD0c85047Bfd321929",ethers.parseEther("100"))

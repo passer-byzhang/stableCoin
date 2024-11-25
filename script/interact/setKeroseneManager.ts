@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import {config} from "../config.base";
+import {config} from "../config.tabi";
 async function setKeroseneManager(vault:string){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
@@ -11,4 +11,4 @@ async function setKeroseneManager(vault:string){
 }
 
 
-setKeroseneManager(config.addresses.stablecoin.Vault.weth);
+setKeroseneManager(config.addresses.stablecoin.Vault.usdd);

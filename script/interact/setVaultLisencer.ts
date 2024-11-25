@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import {config} from "../config.base";
+import {config} from "../config.tabi";
 async function setVaultLisencer(vault:string,isKero:boolean,isLisence:boolean){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
@@ -16,4 +16,4 @@ async function setVaultLisencer(vault:string,isKero:boolean,isLisence:boolean){
 }
 
 
-//setVaultLisencer(config.addresses.stablecoin.Vault.kerosene,true,true);
+setVaultLisencer(config.addresses.stablecoin.Vault.wtabi,false,true);

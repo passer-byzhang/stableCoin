@@ -277,6 +277,11 @@ async function main(){
     )*/
     //await initializeDyadXP(config.addresses.stablecoin.DyadXP)
     //await setKerosene(config.addresses.stablecoin.Vault.kerosene,config.addresses.stablecoin.DyadXP,config.addresses.stablecoin.VaultManager.addresses.proxy);
-    await deployStakerFactory();
+    //await deployStakerFactory();
+    await deployVault(
+      config.addresses.stablecoin.VaultManager.addresses.proxy,
+      config.addresses.wtabi.addresses,
+      config.addresses.chainlink.usdd
+    );
   }
 main();
