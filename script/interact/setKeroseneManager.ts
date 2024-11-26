@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 import {config} from "../config.tabi";
-async function setKeroseneManager(vault:string){
+async function addKeroseneManager(vault:string){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
     const KeroseneManager = await ethers.getContractAt("KeroseneManager",config.addresses.stablecoin.KeroseneManager);
@@ -10,5 +10,14 @@ async function setKeroseneManager(vault:string){
     console.log("set vault  txhash:", tx.hash);
 }
 
+async function removeKeroseneManager(vault:string){
+    const [deployer] = await ethers.getSigners();
+    //deploy dyad impl
+    const KeroseneManager = await ethers.getContractAt("KeroseneManager",config.addresses.stablecoin.KeroseneManager);
 
-setKeroseneManager(config.addresses.stablecoin.Vault.usdd);
+    let   tx = await KeroseneManager.connect(deployer).remove(vault);
+
+    console.log("set vault  txhash:", tx.hash);
+}
+
+addKeroseneManager(config.addresses.stablecoin.Vault.usdd);

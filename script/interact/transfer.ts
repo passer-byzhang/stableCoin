@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import {config} from "../config.base";
+import {config} from "../config.tabi";
 
 async function transferTo(to:string){
     const [deployer] = await ethers.getSigners();
@@ -8,4 +8,4 @@ async function transferTo(to:string){
     const tx = await dnft.connect(deployer).transfer(to,ethers.parseEther("100"));
     console.log("transfer txhash:", tx.hash);
 }
-transferTo("0x64C19ae379f00CBcB824F9F25a393eFB02987796");
+//transferTo("0x616dB1933e4CbE719394A21b6E08567316666952");

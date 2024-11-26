@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import {config} from "../config.base";
+import {config} from "../config.tabi";
 
 async function vaults(nftId:number){
     const [deployer] = await ethers.getSigners();
@@ -32,7 +32,7 @@ async function dyadTotalSupply(){
     const mintedDyad = await dnft.totalSupply();
     console.log("dyadTotalSupply:",mintedDyad);
 }
-
+/*
 async function readVault(nftId:number){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
@@ -47,16 +47,18 @@ async function readVault(nftId:number){
     assetPrice = await keorseneVault.assetPrice();
     console.log("asset:",asset);
     console.log("assetPrice:",assetPrice);
-}
+}*/
 
-async function kerosenePrice(){
+
+async function assetPrice(vault:string){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
-    const dnft = await ethers.getContractAt("KeroseneVault",config.addresses.stablecoin.Vault.kerosene);
+    const dnft = await ethers.getContractAt("KeroseneVault",vault);
     const price = await dnft.assetPrice();
     console.log("price:",price);
 }
 
+assetPrice(config.addresses.stablecoin.Vault.wtabi);
 async function keroseneManagergetVaults(){
     const [deployer] = await ethers.getSigners();
     //deploy dyad impl
@@ -65,6 +67,23 @@ async function keroseneManagergetVaults(){
     console.log("vaults:",vaults);
 }
 
+
+async function getOracle(vault:string){
+    const [deployer] = await ethers.getSigners();
+    //deploy dyad impl
+    const dnft = await ethers.getContractAt("Vault",vault);
+    const price = await dnft.oracle();
+    console.log("oracle:",price);
+}
+async function readOracle(oracle:string){
+    const [deployer] = await ethers.getSigners();
+    //deploy dyad impl
+    const dnft = await ethers.getContractAt("OracleMock",oracle);
+    const price = await dnft.latestRoundData();
+    console.log("price:",price);
+}
+
+/*
 async  function tvl(){
     const weth = await ethers.getContractAt("ERC20Mock",config.addresses.WETH.addresses);
     const wethVaultBalance = await weth.balanceOf(config.addresses.stablecoin.Vault.weth);
@@ -75,6 +94,6 @@ async  function tvl(){
     const kerosineDenominator = await ethers.getContractAt("KeroseneDenominatorV2",config.addresses.stablecoin.KeroseneDenominator);
     const denominator = await kerosineDenominator.denominator();
     console.log("denominator:",denominator.toString());
-}
-
-tvl();
+}*/
+///getOracle(config.addresses.stablecoin.Vault.usdd);
+//readOracle("0x57e97390C8c944e552C7bdAFAf90fC2F82C0F4Df");

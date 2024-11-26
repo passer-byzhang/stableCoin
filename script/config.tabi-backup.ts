@@ -12,8 +12,7 @@ export const config = {
             addresses:"0xCde9c6ad3f82f322AC86DC63eFF63bC405072F95"
         },
         chainlink:{
-            usdd:"0x5cDb4236e1532d7963C123A885FdE16fB2BE5c33",
-            wtabi:"0x42D37Bb975aAdD875cEe1237AB7C200199Fd2d93",
+            usdd:"0x57e97390C8c944e552C7bdAFAf90fC2F82C0F4Df"
         },
         stablecoin:{
             DNft:{
@@ -50,14 +49,14 @@ export const config = {
                 kerosene: "0xb855860E1e9227cdA5F1536e61005ce98e5d6cE9",
             },
             Vault:{
-                usdd :"0x28d432809598b506295c91894D88387889561178",
+                usdd :"0xe01e37fA9218B480BC922613B2489ea54f23F2E2",
                 kerosene:"0xB620aB0b70C5d733B7a582bcBdf27B4222c25a7A",
-                wtabi:"0x7F6a0BcDB0C9F7e675717332339c454227615Cb9"
+                wtabi:"0x5eC36e4e6389390e68A57a8d2423d0DDF90eE643"
             },
             DyadXP:"0x96e65bAD2ECC9064A613Ea355DB123fF4f708370",
             KeroseneDenominator:"0x550931cd1F1147974834cE6140aE831A5f7f0704",
             KeroseneManager:"0xacdBA9b6d11Bd3576439720a18EFB2f19Cc8ed82",
-            StakerFactory:"0xEe0D7427c5155E89bCd1701E859fbb1F53054969"
+            StakerFactory:"0x24312Be4FE10ba2284887D7Acb57aa96d9c5F627"
         }
     },
     params:{
