@@ -11,7 +11,7 @@ async function deployStakerFactory(){
     config.addresses.stablecoin.Kerosene.addresses,
     config.addresses.swap.nonfungiblePositionManager,
     config.addresses.stablecoin.Dyad.addresses.proxy,
-    config.addresses.usdd.addresses,
+    config.addresses.usdc.addresses,
     deployer.address
   );
   await stakerFactory.waitForDeployment();

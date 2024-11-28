@@ -3,10 +3,14 @@ export const config = {
     addresses:{
         swap:{
             factory:"0x1714F3f9d1fbC311422d700602483817F48Cca5F",
-            nonfungiblePositionManager:"0xd8442B36A021Ec592638C8B3529E492c5f6799B9"
+            nonfungiblePositionManager:"0xd8442B36A021Ec592638C8B3529E492c5f6799B9",
+            dyad_usdc_pool:"0x0D4ca7c9335FdA30eFbE3bFD4EfC4b60D74280E2"
         },
         usdd:{
             addresses:"0x672BcCB5d3AEc98E1266CbADc002263A090C51bF"
+        },
+        usdc:{
+            addresses:"0xcDc10593a66185AAa206665C5083ac51Ad935F91"
         },
         wtabi:{
             addresses:"0xCde9c6ad3f82f322AC86DC63eFF63bC405072F95"
@@ -54,7 +58,7 @@ export const config = {
             DyadXP:"0x7D2E2Da2cBDa04C4Ba7592caeA719871ba49bFF0",
             KeroseneDenominator:"0x481b450c74682db6408179cC8e357951768258E5",
             KeroseneManager:"0x02F2b1D855E7139e6a774A9C1fD17Ff181814703",
-            StakerFactory:"0x6930b927adEc6cdbe604c69E6017F23a33A998AD"
+            StakerFactory:"0x83B4ab5E248bcc7d3cc897A8444aA68133Fad4F5"
         }
     },
     params:{
