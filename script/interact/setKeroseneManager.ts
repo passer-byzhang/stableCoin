@@ -20,4 +20,4 @@ async function removeKeroseneManager(vault:string){
     console.log("set vault  txhash:", tx.hash);
 }
 
-addKeroseneManager(config.addresses.stablecoin.Vault.usdd);
+addKeroseneManager(config.addresses.stablecoin.Vault.wtabi);

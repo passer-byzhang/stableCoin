@@ -17,6 +17,6 @@ async function addDeposit(tokenId:number,vault:string,vaultManageAddress:string)
     console.log("addDeposit txhash:", tx.hash);
 
 }
-
-addDeposit(1,config.addresses.stablecoin.Vault.usdd,config.addresses.stablecoin.VaultManager.addresses.proxy);
+//mintDNftTo("0x48dDC29597d4074218ae3EdD0c85047Bfd321929")
+//addDeposit(0,config.addresses.stablecoin.Vault.usdd,config.addresses.stablecoin.VaultManager.addresses.proxy);
 

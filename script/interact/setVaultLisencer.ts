@@ -16,4 +16,15 @@ async function setVaultLisencer(vault:string,isKero:boolean,isLisence:boolean){
 }
 
 
-setVaultLisencer(config.addresses.stablecoin.Vault.wtabi,false,true);
+async function getVaultLisencer(vault:string){
+     const [deployer] = await ethers.getSigners();
+     //deploy dyad impl
+     const Vault = await ethers.getContractAt("VaultLicenser",config.addresses.stablecoin.VaultLicenser.addresses);
+     let tx = await Vault.connect(deployer).licenses(vault);
+     console.log(tx);
+}
+
+//setVaultLisencer(config.addresses.stablecoin.Vault.wtabi,false,true);
+//setVaultLisencer(config.addresses.stablecoin.Vault.usdd,false,true);
+setVaultLisencer(config.addresses.stablecoin.Vault.kerosene,false,true);
+//getVaultLisencer("0x5eC36e4e6389390e68A57a8d2423d0DDF90eE643");

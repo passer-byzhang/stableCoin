@@ -9,7 +9,7 @@ async function deployStakerFactory(){
   const StakerFactory = await ethers.getContractFactory("StakerFactory");
   const stakerFactory = await StakerFactory.connect(deployer).deploy(
     config.addresses.stablecoin.Kerosene.addresses,
-    config.addresses.stablecoin.nonfungibleTokenPositionManager.addresses,
+    config.addresses.swap.nonfungiblePositionManager,
     config.addresses.stablecoin.Dyad.addresses.proxy,
     config.addresses.usdd.addresses,
     deployer.address
