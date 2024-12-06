@@ -2,8 +2,9 @@ import { ethers } from "hardhat";
 import { config } from "../config.tabi";
 import {abi} from "@uniswap/v3-periphery/artifacts/contracts/interfaces/INonfungiblePositionManager.sol/INonfungiblePositionManager.json";
 async function addLiquidity() {
-  const tokenA = "0x849dFA3d939CCA38E0DE0618a361d4343C3186f0";
-  const tokenB = "0x04CC49a74263Dc4eF9cA855f541797D9b86b04B8";
+  const tokenA = config.addresses.stablecoin.Dyad.addresses.proxy;
+
+  const tokenB = config.addresses.usdc.addresses;
   const nonfungiblePositionManager = await ethers.getContractAt(
     "INonfungiblePositionManager",
     config.addresses.swap.nonfungiblePositionManager
@@ -18,8 +19,8 @@ async function addLiquidity() {
     fee: 3000,
     tickLower: -60000,
     tickUpper: 60000,
-    amount0Desired: ethers.parseEther("10"),
-    amount1Desired: ethers.parseEther("10"),
+    amount0Desired: 100,
+    amount1Desired: 100,
     amount0Min: 0,
     amount1Min: 0,
     recipient: deployer.address,
@@ -71,7 +72,7 @@ async function transferFrom(tokenId:number,from:string,to:string){
 }
 //transferFrom(100404,"0x48dDC29597d4074218ae3EdD0c85047Bfd321929","0x64C19ae379f00CBcB824F9F25a393eFB02987796");
 //approve(100404,"0xA2154E81030051C80106FFE6DC65a012fB46b902");
-getTokenOwner(100404);
+//getTokenOwner(100404);
 //tokenId: 100403n
 //addLiquidity();
 //tokenA deployed to: 0x849dFA3d939CCA38E0DE0618a361d4343C3186f0

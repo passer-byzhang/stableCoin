@@ -20,3 +20,4 @@ async function addDeposit(tokenId:number,vault:string,vaultManageAddress:string)
 //mintDNftTo("0x48dDC29597d4074218ae3EdD0c85047Bfd321929")
 //addDeposit(0,config.addresses.stablecoin.Vault.usdd,config.addresses.stablecoin.VaultManager.addresses.proxy);
 
+//addDeposit(0,config.addresses.stablecoin.Vault.wtabi,config.addresses.stablecoin.VaultManager.addresses.proxy);

@@ -17,5 +17,6 @@ async function approve(token:string,to:string,amount:bigint){
     console.log("transfer txhash:", tx.hash);
 }
 
+
 approve(config.addresses.usdd.addresses,config.addresses.stablecoin.VaultManager.addresses.proxy,ethers.parseEther("100"));
-//transferTo("0x616dB1933e4CbE719394A21b6E08567316666952");
+//transferTo(config.addresses.stablecoin.StakerFactory);

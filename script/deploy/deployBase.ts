@@ -19,7 +19,16 @@ async function deployStakerFactory(){
   console.log("StakerFactory deployed to:", stakerFactoryAddress);
 }
 
-
+async function deployKeroOracle(){
+  const [deployer, proxyAdmin] = await ethers.getSigners();
+  //deploy dnft impl
+  const KeroOracle = await ethers.getContractFactory("KeroseneOracleV2");
+  const keroOracle = await KeroOracle.connect(deployer).deploy(
+  );
+  await keroOracle.waitForDeployment();
+  const keroOracleAddress = await keroOracle.getAddress();
+  console.log("KeroOracle deployed to:", keroOracleAddress);
+}
 
 async function deployDNft() {
   const [deployer, proxyAdmin] = await ethers.getSigners();
@@ -240,6 +249,7 @@ async function main(){
     //await deployDyad(config.addresses.stablecoin.Licenser.addresses);
     //4. deploy kerosene, keorsene oracle
     //await deployKerosene();
+    //await deployKeroOracle();
     //await deployMockOracle(1000000);
     //5. deploy VaultManager
     //await deployVaultManager();
@@ -247,37 +257,6 @@ async function main(){
     //await deployTokenA();
    
     //7. deploy weth vault
-    /*await deployVault(config.addresses.stablecoin.VaultManager.addresses.proxy,
-        config.addresses.usdd.addresses,
-        config.addresses.chainlink.usdd)*/
-    //8. deploy keorsene vault
-    //await depolyKeroseneVault(config.addresses.stablecoin.VaultManager.addresses.proxy, config.addresses.stablecoin.Kerosene.addresses, config.addresses.stablecoin.Oracle.kerosene)
-    //9. deploy dyadxp
-    //await deployDyadXP(config.addresses.stablecoin.VaultManager.addresses.proxy, config.addresses.stablecoin.Vault.kerosene, config.addresses.stablecoin.DNft.addresses.proxy)
-    //10. initialize vault manager
-    /*await initializeVaultManage(
-        config.addresses.stablecoin.VaultManager.addresses.proxy,
-        config.addresses.stablecoin.DNft.addresses.proxy,
-        config.addresses.stablecoin.Dyad.addresses.proxy,
-        config.addresses.stablecoin.VaultLicenser.addresses
-    )*/
-    //11. configure vault manager
-    //deploy KeroseneDenominatorV2
-    //await KeroseneDenominatorV2(config.addresses.stablecoin.Kerosene.addresses, [])
-    //deploy KeroseneManager
-    //await deployKeroseneManager()
-    //deploy KeroseneVault
-    /*await depolyKeroseneVault(
-        config.addresses.stablecoin.VaultManager.addresses.proxy,
-        config.addresses.stablecoin.Kerosene.addresses,
-        config.addresses.stablecoin.Dyad.addresses.proxy,
-        config.addresses.stablecoin.KeroseneManager,
-        config.addresses.stablecoin.Oracle.kerosene,
-        config.addresses.stablecoin.KeroseneDenominator
-    )*/
-    //await initializeDyadXP(config.addresses.stablecoin.DyadXP)
-    //await setKerosene(config.addresses.stablecoin.Vault.kerosene,config.addresses.stablecoin.DyadXP,config.addresses.stablecoin.VaultManager.addresses.proxy);
-    await deployStakerFactory();
     /*await deployVault(
       config.addresses.stablecoin.VaultManager.addresses.proxy,
       config.addresses.usdd.addresses,
@@ -290,5 +269,29 @@ async function main(){
       config.addresses.wtabi.addresses,
       config.addresses.chainlink.wtabi
     );*/
+    //deploy KeroseneDenominatorV2
+    //await KeroseneDenominatorV2(config.addresses.stablecoin.Kerosene.addresses, [])
+        //deploy KeroseneManager
+   //await deployKeroseneManager()
+    //8. deploy keorsene vault
+    /*await depolyKeroseneVault(config.addresses.stablecoin.VaultManager.addresses.proxy, 
+      config.addresses.stablecoin.Kerosene.addresses, 
+      config.addresses.stablecoin.Dyad.addresses.proxy,
+      config.addresses.stablecoin.KeroseneManager,
+      
+      config.addresses.stablecoin.Oracle.kerosene,
+      config.addresses.stablecoin.KeroseneDenominator)*/
+    //9. deploy dyadxp
+    //await deployDyadXP(config.addresses.stablecoin.VaultManager.addresses.proxy, config.addresses.stablecoin.Vault.kerosene, config.addresses.stablecoin.DNft.addresses.proxy)
+    //10. initialize vault manager
+    /*await initializeVaultManage(
+        config.addresses.stablecoin.VaultManager.addresses.proxy,
+        config.addresses.stablecoin.DNft.addresses.proxy,
+        config.addresses.stablecoin.Dyad.addresses.proxy,
+        config.addresses.stablecoin.VaultLicenser.addresses
+    )*/
+    //await initializeDyadXP(config.addresses.stablecoin.DyadXP)
+    //await setKerosene(config.addresses.stablecoin.Vault.kerosene,config.addresses.stablecoin.DyadXP,config.addresses.stablecoin.VaultManager.addresses.proxy);
+    await deployStakerFactory();
   }
 main();

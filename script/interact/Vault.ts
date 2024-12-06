@@ -38,7 +38,7 @@ async function removeVault(vaultmanager:string,vault:string,id:bigint){
 }
 
 
-//deposit(config.addresses.stablecoin.VaultManager.addresses.proxy,config.addresses.stablecoin.Vault.usdd,ethers.parseEther("10"))
+deposit(config.addresses.stablecoin.VaultManager.addresses.proxy,config.addresses.stablecoin.Vault.usdd,ethers.parseEther("10"))
 //getUsdValue(config.addresses.stablecoin.Vault.usdd,0n)
 //getVaults(config.addresses.stablecoin.VaultManager.addresses.proxy,1n)
 //removeVault(config.addresses.stablecoin.VaultManager.addresses.proxy,"0xe01e37fA9218B480BC922613B2489ea54f23F2E2",1n)

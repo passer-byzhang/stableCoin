@@ -3,8 +3,7 @@ export const config = {
     addresses:{
         swap:{
             factory:"0x1714F3f9d1fbC311422d700602483817F48Cca5F",
-            nonfungiblePositionManager:"0xd8442B36A021Ec592638C8B3529E492c5f6799B9",
-            dyad_usdc_pool:"0x0D4ca7c9335FdA30eFbE3bFD4EfC4b60D74280E2"
+            nonfungiblePositionManager:"0xd8442B36A021Ec592638C8B3529E492c5f6799B9"
         },
         usdd:{
             addresses:"0x672BcCB5d3AEc98E1266CbADc002263A090C51bF"
@@ -22,43 +21,43 @@ export const config = {
         stablecoin:{
             DNft:{
                 addresses:{
-                    impl:"0x10de30C87af2cE266aFC2ce651d0a8E7f48e47dF",
-                    proxy:"0xfe9DA1405B23561E5C6b9e15Dd75BF0F96E16Df2",
+                    impl:"0xF49f34A350c534Ac315574417f3a657F1688EE98",
+                    proxy:"0x6a14B1c77898F30715D4cEdBa124d17622e53Bde",
                 }
             },
             Dyad:{
                 addresses:{
-                    impl:"0x81C5A6C1aA4AC7900160Db63282f5610445AfC6a",
-                    proxy:"0x6865AaAa92857D9826944789735B20c2B4e760d9",
+                    impl:"0x6c09E4b8D985170190C616dbA37cCc31324a1E50",
+                    proxy:"0x11fb3e68C1A4EC7302c73A6A6E1C4cE1754b67e0",
                 }
             },
             VaultManager:{
                 addresses:{
-                    impl:"0xB157e447C64F18f200a1EF836816e7659c09D7BC",
-                    proxy:"0x66208300314029640b7EdA8FEe042559f7676075",
+                    impl:"0xbEdB4Ef2f5EB6fDf70f04aA0b5d4E2fDE905DD41",
+                    proxy:"0xFB9eBaCA3e6258Fba9ab9544744f2c4d284FCB20",
                 }
             },
             Licenser:{
-                addresses:"0x95E7d971514fF685029a9A29FFcb3a20c458368B"
+                addresses:"0x186fFC898ce99CaE1ADa65ec47CA8519dC4558FE"
             },
             VaultLicenser:{
-                addresses:"0x2acD0b9e94A75F3981e5028dC8AC96584F7E8534"
+                addresses:"0xC28E31FdCBd920cC28A2889Fce4bFba5bf508474"
             },
             Kerosene:{
-                addresses:"0xb855860E1e9227cdA5F1536e61005ce98e5d6cE9"
+                addresses:"0x57717971FAD7cFa88b9Cb52bb309BA851aaa706C"
             },
             Oracle:{
-                kerosene: "0xb855860E1e9227cdA5F1536e61005ce98e5d6cE9",
+                kerosene: "0xbc4d2c18B4f9216c74d874fF5aFc18491262b09a",
             },
             Vault:{
-                usdd :"0x6163656D852D52F2a898B93478988429c3cE700C",
-                kerosene:"0x417d944e45Ffd48dD58480eBe3803bFd82f60B15",
-                wtabi:"0x03cbB9d2671AC573972EE5Df711D89a4B2CAc8E9"
+                usdd :"0xb9c3CB45B67646239d45A5a7EaaE78E382839939",
+                kerosene:"0xa3E4585e1dF3620363AA3E32ee4Ea08df0c5c552",
+                wtabi:"0xac09644D4Da96b960EEF4174857e0a088ffBFf86"
             },
-            DyadXP:"0x7D2E2Da2cBDa04C4Ba7592caeA719871ba49bFF0",
-            KeroseneDenominator:"0x481b450c74682db6408179cC8e357951768258E5",
-            KeroseneManager:"0x02F2b1D855E7139e6a774A9C1fD17Ff181814703",
-            StakerFactory:"0x83B4ab5E248bcc7d3cc897A8444aA68133Fad4F5"
+            DyadXP:"0x4f3B62DeddEB52F7D63aff2144A02c2B8da9aB74",
+            KeroseneDenominator:"0x8e94A584871AeBB785d18349d924D97B1CF724BA",
+            KeroseneManager:"0xCb57E378DF9267b4F455504c3c08FFA5541B3247",
+            StakerFactory:"0x756c0f660C099e74eb8417ed40c559dBa918470d"
         }
     },
     params:{

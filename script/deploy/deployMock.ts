@@ -21,6 +21,6 @@ export async function deployMockOracle(price:number){
     console.log("oracle deployed to:", oracleAddress);
 }
 
-deployMockOracle(1000000);
+//deployMockOracle(1000000);
 //0x5cDb4236e1532d7963C123A885FdE16fB2BE5c33
-//
+//0x42D37Bb975aAdD875cEe1237AB7C200199Fd2d93

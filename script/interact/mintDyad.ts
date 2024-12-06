@@ -18,5 +18,5 @@ async function mintDyad(vaultmanager:string,id:bigint,amount:bigint){
     console.log("mint txhash:", tx.hash);
 }
 
-mintDyad(config.addresses.stablecoin.VaultManager.addresses.proxy,0n,10000000n)
-//getVaultsValues(config.addresses.stablecoin.VaultManager.addresses.proxy,0)
+//mintDyad(config.addresses.stablecoin.VaultManager.addresses.proxy,0n,10000000n)
+getVaultsValues(config.addresses.stablecoin.VaultManager.addresses.proxy,0)
